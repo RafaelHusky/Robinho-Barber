@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robinho Barber Shop - Estilo Atemporal</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Aplicando fontes e paleta de cores "Minimalista-Retrô" */
+        :root {
+            --bg-black: #000000;
+            --bg-card: #111111;
+            --accent-cream: #F5F5DC;
+            --text-light-gray: #CCCCCC;
+            --text-dark-gray: #888888;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-light-gray);
+        }
+        h1, h2, h3, .font-display {
+            font-family: 'Lora', serif;
+        }
+
+        /* Nova paleta de cores */
+        .text-cream { color: var(--accent-cream); }
+        .bg-cream { background-color: var(--accent-cream); }
+        .border-cream { border-color: var(--accent-cream); }
+        .bg-card { background-color: var(--bg-card); }
+
+        /* Fundo com textura sutil */
+        .bg-minimal-pattern {
+            background-color: var(--bg-black);
+        }
+
+        /* Moldura de imagem */
+        .minimal-frame {
+            border: 1px solid #222;
+            padding: 16px;
+            background: #0A0A0A;
+        }
+        .minimal-frame img {
+             filter: grayscale(1) contrast(1.1);
+        }
+
+        /* Estilização da barra de rolagem */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #222; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-cream); }
+        
+        /* --- Estilos da Seleção de Serviço e Barbeiro --- */
+        .selectable-item {
+            border: 1px solid #333;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            text-align: left;
+        }
+        .selectable-item:hover {
+            background-color: #222;
+        }
+        .selectable-item.selected {
+            background-color: var(--accent-cream);
+            color: #000;
+            border-color: var(--accent-cream);
+        }
+        .selectable-item.selected .text-text-dark-gray, .selectable-item.selected .text-cream, .selectable-item.selected .text-white {
+            color: #000;
+        }
+
+        /* --- Estilos do Calendário --- */
+        .calendar-header {
+            text-align: center;
+            font-weight: 500;
+            color: var(--text-light-gray);
+            padding-bottom: 10px;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .calendar-day {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 45px;
+            cursor: pointer;
+            border-radius: 0;
+            border: 1px solid #222;
+            transition: all 0.2s ease-in-out;
+        }
+        .calendar-day:not(.disabled):hover {
+            color: #000;
+            background-color: var(--accent-cream);
+        }
+        .calendar-day.today {
+            border-color: var(--accent-cream);
+            color: var(--accent-cream);
+        }
+        .calendar-day.selected {
+            background-color: var(--accent-cream);
+            color: #000;
+            border-color: var(--accent-cream);
+        }
+        .calendar-day.disabled {
+            color: #333;
+            cursor: not-allowed;
+            background-color: transparent;
+        }
+        .calendar-nav button {
+            background: transparent;
+            border: 1px solid #333;
+            color: var(--text-light-gray);
+            padding: 8px 16px;
+            border-radius: 0;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-family: 'Inter', sans-serif;
+        }
+        .calendar-nav button:hover {
+            background-color: var(--accent-cream);
+            color: #000;
+            border-color: var(--accent-cream);
+        }
+
+        /* --- Estilos dos Horários --- */
+        .time-slot {
+            background-color: transparent;
+            color: var(--text-light-gray);
+            padding: 12px;
+            border-radius: 0;
+            border: 1px solid #333;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-weight: 500;
+        }
+        .time-slot:hover {
+            background-color: var(--accent-cream);
+            color: #000;
+            border-color: var(--accent-cream);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- ===== Cabeçalho ===== -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm transition-all duration-300 border-b border-gray-800">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#">
+                <img src="https://media.licdn.com/dms/image/v2/D4E22AQGzltKs_w6yyQ/feedshare-shrink_800/B4EZh7iHZmHEAk-/0/1754419198007?e=1757548800&v=beta&t=yNpid3PSTKoh0cyE_P1pzvemNq2N4YKHhLvuFvXL51g" alt="Logo Robinho Barber Shop" class="h-14">
+            </a>
+
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#sobre" class="text-gray-300 hover:text-white transition-colors duration-300">Sobre</a>
+                <a href="#agendamento" class="text-gray-300 hover:text-white transition-colors duration-300">Agendamento</a>
+                <a href="#contato" class="text-gray-300 hover:text-white transition-colors duration-300">Contato</a>
+            </nav>
+
+            <a href="#agendamento" class="hidden md:block bg-cream text-black font-semibold px-6 py-2 hover:bg-white transition-colors duration-300">
+                Agendar
+            </a>
+
+            <button id="mobile-menu-button" class="md:hidden text-white">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-card border-t border-gray-800">
+            <nav class="flex flex-col items-center space-y-4 py-4">
+                <a href="#sobre" class="text-gray-300 hover:text-white transition-colors duration-300">Sobre</a>
+                <a href="#agendamento" class="text-gray-300 hover:text-white transition-colors duration-300">Agendamento</a>
+                <a href="#contato" class="text-gray-300 hover:text-white transition-colors duration-300">Contato</a>
+                <a href="#agendamento" class="w-11/12 text-center bg-cream text-black font-semibold px-6 py-3 mt-4 hover:bg-white transition-colors duration-300">
+                    Agendar
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===== Conteúdo Principal ===== -->
+    <main>
+
+        <!-- ===== Seção Hero ===== -->
+        <section id="home" class="relative min-h-screen flex items-center justify-center text-center bg-cover bg-center" style="background-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 1) 100%), url('https://images.unsplash.com/photo-1599351542840-29b43b3aa4e6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80'); background-attachment: fixed;">
+            <div class="container mx-auto px-6 z-10">
+                <div class="flex flex-col items-center">
+                     <img src="https://media.licdn.com/dms/image/v2/D4E22AQGzltKs_w6yyQ/feedshare-shrink_800/B4EZh7iHZmHEAk-/0/1754419198007?e=1757548800&v=beta&t=yNpid3PSTKoh0cyE_P1pzvemNq2N4YKHhLvuFvXL51g" alt="Logo Robinho Barber Shop" class="h-90 mb-8">
+                    <p class="text-lg md:text-xl text-text-light-gray max-w-2xl mx-auto mb-10 font-light">
+                        Uma fusão de técnicas clássicas e design moderno para o homem contemporâneo.
+                    </p>
+                    <a href="#agendamento" class="bg-cream text-black font-bold text-lg px-12 py-4 hover:bg-white transition-colors duration-300 transform hover:scale-105">
+                        RESERVAR HORÁRIO
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Seção Sobre ===== -->
+        <section id="sobre" class="py-20 md:py-32 bg-minimal-pattern">
+            <div class="container mx-auto px-6">
+                <div class="grid md:grid-cols-2 gap-16 items-center">
+                    <div class="minimal-frame">
+                        <img src="https://images.unsplash.com/photo-1536520002442-9979a83a0212?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" alt="Interior da Robinho Barber Shop" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-center md:text-left">
+                        <h2 class="text-4xl md:text-5xl font-display text-white mb-6">A Arte da Barbearia</h2>
+                        <p class="text-text-light-gray mb-4 leading-relaxed text-lg">
+                            A Robinho Barber Shop é um espaço onde a tradição e a modernidade se encontram. Valorizamos a precisão do corte clássico e a pureza do design minimalista para criar uma experiência única.
+                        </p>
+                        <p class="text-text-dark-gray leading-relaxed font-light">
+                           Nosso compromisso é com a qualidade e a atenção aos detalhes. Acreditamos que um bom barbeiro não apenas corta cabelo, mas esculpe a confiança e o estilo de cada cliente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Divisor -->
+        <div class="container mx-auto px-6">
+            <hr class="border-t border-gray-800" />
+        </div>
+        
+        <!-- ===== Seção Agendamento ===== -->
+        <section id="agendamento" class="py-20 md:py-32 bg-minimal-pattern">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="text-4xl md:text-5xl font-display text-white mb-4">Agende seu Horário</h2>
+                </div>
+
+                <div class="max-w-7xl mx-auto mt-12">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        
+                        <!-- Coluna 1: Barbeiro -->
+                        <div class="md:col-span-1">
+                            <h3 class="text-2xl font-display text-white mb-6">1. Selecione o Barbeiro</h3>
+                             <div id="barber-selection" class="space-y-2">
+                                <div class="selectable-item" data-barber="Robinho Barber">
+                                    <h4 class="text-lg text-white font-semibold">Robinho Barber</h4>
+                                </div>
+                                <div class="selectable-item" data-barber="Murilo Barber">
+                                    <h4 class="text-lg text-white font-semibold">Murilo Barber</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Coluna 2: Serviços -->
+                        <div id="service-column" class="md:col-span-1 hidden">
+                            <h3 class="text-2xl font-display text-white mb-6">2. Selecione o Serviço</h3>
+                            <div id="service-list" class="space-y-2">
+                                <!-- Serviços serão inseridos aqui pelo JS -->
+                            </div>
+                        </div>
+
+                        <!-- Coluna 3: Calendário e Horários -->
+                        <div id="calendar-column" class="md:col-span-1 hidden">
+                             <h3 class="text-2xl font-display text-white mb-6">3. Selecione a Data</h3>
+                            <div class="bg-card p-6 w-full border border-gray-800">
+                                <div class="calendar-nav">
+                                    <button id="prev-month-btn">&lt;</button>
+                                    <h3 id="calendar-month-year" class="text-lg font-semibold text-white tracking-widest"></h3>
+                                    <button id="next-month-btn">&gt;</button>
+                                </div>
+                                <div class="calendar-header grid grid-cols-7 gap-2 text-sm mt-4">
+                                    <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
+                                </div>
+                                <div id="calendar-days" class="grid grid-cols-7 gap-2 mt-2">
+                                    <!-- Dias do calendário serão gerados aqui -->
+                                </div>
+                            </div>
+                            
+                            <div id="time-slots-container" class="hidden w-full mt-8">
+                                <h3 class="text-xl font-display text-white mb-4">Horários para <span id="selected-date-display"></span></h3>
+                                <div id="time-slots" class="grid grid-cols-3 gap-2">
+                                    <!-- Horários serão gerados aqui -->
+                                </div>
+                                <p class="text-text-dark-gray mt-6 text-sm text-left">
+                                    * A confirmação do agendamento será feita via WhatsApp.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Seção Contato ===== -->
+        <section id="contato" class="py-20 md:py-32 bg-card">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="text-4xl md:text-5xl font-display text-white mb-4">Contato</h2>
+                    <p class="text-text-dark-gray max-w-2xl mx-auto mb-12 font-light">Estamos aqui para atender você.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="h-96 md:h-full shadow-2xl">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3662.404283338581!2d-51.8753749!3d-23.4580149!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDI2JzQyLjQiUyA1McKwNTInMjIuMSJX!5e0!3m2!1spt-BR!2sbr!4v1691205555555!5m2!1spt-BR!2sbr"
+                            width="100%" 
+                            height="100%" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            class="filter grayscale-[100%] invert-[1] contrast-[1.2] opacity-80">
+                        </iframe>
+                    </div>
+                    <div class="space-y-8 flex flex-col justify-center">
+                        <div class="flex items-start space-x-4">
+                            <i data-lucide="map-pin" class="w-6 h-6 text-cream mt-1 flex-shrink-0"></i>
+                            <div>
+                                <h3 class="text-lg font-semibold text-white">Endereço</h3>
+                                <p class="text-text-dark-gray font-light">R. Ver. Gildo de Freitas, 1030 - Jardim Universal<br>Sarandi, PR - 87111-660</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <i data-lucide="phone" class="w-6 h-6 text-cream mt-1 flex-shrink-0"></i>
+                            <div>
+                                <h3 class="text-lg font-semibold text-white">WhatsApp</h3>
+                                <a href="https://wa.me/554499697023?text=Ol%C3%A1%21%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" class="text-text-dark-gray hover:text-white font-light">(44) 9969-7023</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <i data-lucide="clock" class="w-6 h-6 text-cream mt-1 flex-shrink-0"></i>
+                            <div>
+                                <h3 class="text-lg font-semibold text-white">Horário de Funcionamento</h3>
+                                <p class="text-text-dark-gray font-light">Terça a Sexta: 09:00 - 20:30<br>Sábado: 09:00 - 19:00<br>Dom e Seg: Fechado</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== Rodapé ===== -->
+    <footer class="bg-black py-8">
+        <div class="container mx-auto px-6 text-center text-text-dark-gray">
+            <p>© <span id="year"></span> Robinho Barber Shop. Todos os direitos reservados.</p>
+            <p class="text-sm mt-2 font-light tracking-widest">EST. 2014</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/554499697023?text=Ol%C3%A1%21%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" class="fixed bottom-6 right-6 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition-all duration-300 transform hover:scale-110 z-40">
+        <i data-lucide="message-circle" class="w-8 h-8"></i>
+    </a>
+
+    <script>
+        lucide.createIcons();
+
+        // Lógica do Menu Mobile
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuIcon = mobileMenuButton.querySelector('i');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuIcon.setAttribute('data-lucide', mobileMenu.classList.contains('hidden') ? 'menu' : 'x');
+            lucide.createIcons();
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenuIcon.setAttribute('data-lucide', 'menu');
+                lucide.createIcons();
+            });
+        });
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // --- Lógica do Agendamento ---
+        const serviceListContainer = document.getElementById('service-list');
+        const barberColumn = document.getElementById('barber-column');
+        const serviceColumn = document.getElementById('service-column');
+        const barberSelectors = document.querySelectorAll('#barber-selection .selectable-item');
+        const calendarColumn = document.getElementById('calendar-column');
+        
+        const calendarDaysEl = document.getElementById('calendar-days');
+        const monthYearEl = document.getElementById('calendar-month-year');
+        const prevMonthBtn = document.getElementById('prev-month-btn');
+        const nextMonthBtn = document.getElementById('next-month-btn');
+        const timeSlotsContainer = document.getElementById('time-slots-container');
+        const timeSlotsEl = document.getElementById('time-slots');
+        const selectedDateDisplay = document.getElementById('selected-date-display');
+
+        let currentDate = new Date();
+        let selectedDate = null;
+        let selectedService = null;
+        let selectedBarber = null;
+
+        const services = [
+            { name: 'Corte', price: 'R$ 45,00', duration: 30 },
+            { name: 'Barba', price: 'R$ 35,00', duration: 30 },
+            { name: 'Sobrancelha', price: 'R$ 20,00', duration: 30 },
+            { name: 'Pezinho do Cabelo', price: 'R$ 20,00', duration: 30 },
+            { name: 'Corte + Desenho', price: 'R$ 65,00', duration: 60 },
+            { name: 'Corte e Barba', price: 'R$ 80,00', duration: 60 },
+            { name: 'Corte, Barba e Sobrancelha', price: 'R$ 90,00', duration: 60 },
+            { name: 'Corte, Sobrancelha e Cavanhaque', price: 'R$ 75,00', duration: 60 },
+        ];
+        
+        function resetSelections(step) {
+            if (step <= 1) {
+                selectedBarber = null;
+                serviceColumn.classList.add('hidden');
+                barberSelectors.forEach(s => s.classList.remove('selected'));
+            }
+            if (step <= 2) {
+                selectedService = null;
+                calendarColumn.classList.add('hidden');
+                document.querySelectorAll('#service-list .selectable-item').forEach(s => s.classList.remove('selected'));
+            }
+            if (step <= 3) {
+                 selectedDate = null;
+                 timeSlotsContainer.classList.add('hidden');
+                 document.querySelectorAll('.calendar-day.selected').forEach(el => el.classList.remove('selected'));
+            }
+        }
+
+        function displayServices() {
+            serviceListContainer.innerHTML = '';
+            services.forEach(service => {
+                const serviceEl = document.createElement('div');
+                serviceEl.classList.add('selectable-item');
+                serviceEl.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <h4 class="text-lg text-white font-semibold">${service.name}</h4>
+                        <div class="text-lg font-semibold text-cream">${service.price}</div>
+                    </div>
+                    <p class="text-sm text-text-dark-gray">${service.duration} min</p>
+                `;
+                serviceEl.addEventListener('click', () => {
+                    resetSelections(2);
+                    selectedService = service;
+                    document.querySelectorAll('#service-list .selectable-item').forEach(s => s.classList.remove('selected'));
+                    serviceEl.classList.add('selected');
+                    calendarColumn.classList.remove('hidden');
+                    generateCalendar(currentDate);
+                });
+                serviceListContainer.appendChild(serviceEl);
+            });
+        }
+
+        barberSelectors.forEach(selector => {
+            selector.addEventListener('click', () => {
+                resetSelections(1);
+                selectedBarber = selector.getAttribute('data-barber');
+                selector.classList.add('selected');
+                serviceColumn.classList.remove('hidden');
+                displayServices();
+            });
+        });
+
+        const generateCalendar = (date) => {
+            if (!selectedBarber || !selectedService) return;
+            
+            const month = date.getMonth();
+            const year = date.getFullYear();
+            monthYearEl.textContent = `${date.toLocaleString('pt-BR', { month: 'long' }).charAt(0).toUpperCase() + date.toLocaleString('pt-BR', { month: 'long' }).slice(1)} ${year}`;
+            const firstDayOfMonth = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            calendarDaysEl.innerHTML = '';
+
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                calendarDaysEl.innerHTML += `<div></div>`;
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.textContent = day;
+                dayEl.classList.add('calendar-day');
+                const dayDate = new Date(year, month, day);
+                const dayOfWeek = dayDate.getDay();
+                let isDisabled = false;
+
+                if (dayDate < today) isDisabled = true;
+                if (dayOfWeek === 0) isDisabled = true; // Domingo off para todos
+                if (selectedBarber === 'Robinho Barber' && dayOfWeek === 1) isDisabled = true; // Robinho off na segunda
+
+                if (isDisabled) {
+                    dayEl.classList.add('disabled');
+                } else {
+                    dayEl.addEventListener('click', () => selectDate(day, month, year, dayEl));
+                }
+                
+                if (dayDate.getTime() === today.getTime() && !isDisabled) {
+                    dayEl.classList.add('today');
+                }
+                if (selectedDate && dayDate.getTime() === selectedDate.getTime()) {
+                    dayEl.classList.add('selected');
+                }
+                calendarDaysEl.appendChild(dayEl);
+            }
+        };
+
+        const generateTimeSlots = (day, month, year) => {
+            timeSlotsEl.innerHTML = '';
+            const dayOfWeek = new Date(year, month, day).getDay();
+            let startTime, endTime;
+            
+            if (dayOfWeek === 6) { 
+                 startTime = 9 * 60; endTime = 19 * 60;
+            } else {
+                 startTime = 9 * 60; endTime = 20 * 60 + 30;
+            }
+            
+            const interval = selectedService.duration;
+
+            for (let time = startTime; time <= endTime - interval; time += 30) { // Verifica a cada 30min para encaixar serviços de 1h
+                const hours = Math.floor(time / 60);
+                const minutes = time % 60;
+                const timeString = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+                
+                const slotEl = document.createElement('div');
+                slotEl.textContent = timeString;
+                slotEl.classList.add('time-slot');
+                slotEl.addEventListener('click', () => {
+                    const fullDate = `${String(day).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}/${year}`;
+                    const message = `Olá! Gostaria de agendar o serviço "${selectedService.name}" com ${selectedBarber} no dia ${fullDate} às ${timeString}.`;
+                    window.open(`https://wa.me/554499697023?text=${encodeURIComponent(message)}`, '_blank');
+                });
+                timeSlotsEl.appendChild(slotEl);
+            }
+        };
+
+        const selectDate = (day, month, year, element) => {
+            resetSelections(3);
+            selectedDate = new Date(year, month, day);
+            element.classList.add('selected');
+            const formattedDate = `${String(day).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}`;
+            selectedDateDisplay.textContent = formattedDate;
+            timeSlotsContainer.classList.remove('hidden');
+            generateTimeSlots(day, month, year);
+        };
+        
+        prevMonthBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generateCalendar(currentDate);
+        });
+
+        nextMonthBtn.addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generateCalendar(currentDate);
+        });
+        
+    </script>
+</body>
+</html>
